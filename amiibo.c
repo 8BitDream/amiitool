@@ -10,8 +10,6 @@
 #include "mbedtls/md.h"
 #include "mbedtls/aes.h"
 #include <errno.h>
-#include "portable_endian.h"
-
 
 #define HMAC_POS_DATA 0x008
 #define HMAC_POS_TAG 0x1B4
@@ -93,9 +91,8 @@ bool nfc3d_amiibo_unpack(const nfc3d_amiibo_keys * amiiboKeys, const uint8_t * t
 	mbedtls_md_hmac( mbedtls_md_info_from_type(MBEDTLS_MD_SHA256), dataKeys.hmacKey, sizeof(dataKeys.hmacKey),	
 			 plain + 0x029, 0x1DF, plain + HMAC_POS_DATA );
 
-	return
-			memcmp(plain + HMAC_POS_DATA, internal + HMAC_POS_DATA, 32) == 0 &&
-			memcmp(plain + HMAC_POS_TAG, internal + HMAC_POS_TAG, 32) == 0;
+	//we only validate the tag hmac (ignore data hmac incase it was not initialised properly)
+	return memcmp(plain + HMAC_POS_TAG, internal + HMAC_POS_TAG, 32) == 0;
 }
 
 void nfc3d_amiibo_pack(const nfc3d_amiibo_keys * amiiboKeys, const uint8_t * plain, uint8_t * tag) {
@@ -156,24 +153,3 @@ bool nfc3d_amiibo_load_keys(nfc3d_amiibo_keys * amiiboKeys, const char * path) {
 
 	return true;
 }
-
-
-void nfc3d_amiibo_copy_app_data(const uint8_t * src, uint8_t * dst) {
-
-	uint16_t *ami_nb_wr = (uint16_t*)(dst + 0x29);
-	uint16_t *cfg_nb_wr = (uint16_t*)(dst + 0xB4);
-
-	/* increment write counters */
-	*ami_nb_wr = htobe16(be16toh(*ami_nb_wr) + 1);
-	*cfg_nb_wr = htobe16(be16toh(*cfg_nb_wr) + 1);
-
-	/* copy flags */
-	dst[0x2C] = src[0x2C];
-	/* copy programID */
-	memcpy(dst + 0xAC, src + 0xAC, 8);
-	/* copy AppID */
-	memcpy(dst + 0xB6, src + 0xB6, 4);
-	/* copy AppData */
-	memcpy(dst + 0xDC, src + 0xDC, 216);
-}
-
