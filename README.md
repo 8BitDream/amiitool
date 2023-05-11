@@ -22,7 +22,7 @@ Examples
 
 - Encryption "modified.bin" to "signed.bin":
    > amiitool -e -k retail.bin -i "modified.bin" -o "signed.bin"
-   
+
 *amiitool uses, but is not affiliated with or endorsed by, mbedtls (https://github.com/Mbed-TLS/mbedtls)*
 
-*amiitool is not affiliated, associated, authorized, endorsed by, or in any way connected with Nintendo. amiibo is a registered trademark of Nintendo. No official resources are included in this project. Files created with this project are not intended for sale or distribution. This project is for educational and archival purposes only.*
+*amiitool is not affiliated, authorized, sponsored, endorsed, or in any way connected with Nintendo Co., Ltd or its subsidiaries. amiibo is a registered trademark of Nintendo of America Inc. No licensed resources are owned. Files created with or resulting from amiitool are not intended for sale or distribution. amiitool is for educational and archival purposes only.*
